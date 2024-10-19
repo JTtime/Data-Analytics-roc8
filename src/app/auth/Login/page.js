@@ -37,6 +37,9 @@ const Login = () => {
                 console.log('token from response', auth_token)
                 localStorage.setItem('token', auth_token);
                 setToken(token); // Call setToken from AuthContext to update state
+                router.push('/visualisation');
+            } else {
+                toast.error(data?.error)
             }
 
 
@@ -44,7 +47,7 @@ const Login = () => {
 
 
             console.log('Cookies after login:', document.cookie);
-            router.push('/Visualization');
+            router.push('/visualization');
         } catch (error) {
             console.error(error);
             setError('Invalid username or password.');

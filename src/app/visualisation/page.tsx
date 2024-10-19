@@ -131,7 +131,7 @@ const Visualization = () => {
     Cookies.set('filters', JSON.stringify(filters));
 
     // Construct a shareable URL for the browser
-    const shareableUrl = `/visualization?age=${filters.age}&gender=${filters.gender}&startDate=${filters.startDate}&endDate=${filters.endDate}`;
+    const shareableUrl = `/visualisation?age=${filters.age}&gender=${filters.gender}&startDate=${filters.startDate}&endDate=${filters.endDate}`;
     window.history.pushState({}, '', shareableUrl); // Change browser URL without reloading
 
     // Construct API URL based on filters

@@ -26,7 +26,7 @@ const HomePage = () => {
         if (!token?.length) {
             router.push('/auth/Login');
         } else {
-            router.push('/Visualization');
+            router.push('/visualization');
         }
     }, [token]);
 
