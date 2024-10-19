@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../theme';
 import { AuthProvider } from "@/context/AuthContext";
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,6 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           >
             {children}
+            
           </body>
         </html>
       </AuthProvider>

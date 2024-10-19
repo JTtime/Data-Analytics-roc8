@@ -31,6 +31,8 @@ import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import Cookies from 'js-cookie';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface DataItem {
   _id: string;
@@ -99,6 +101,7 @@ const Visualization = () => {
 
   const handleLogout = async () => {
     await axios.post('http://localhost:3001/api/auth/logout');
+    toast.success('User Logged out successfully')
     localStorage.removeItem('auth_token');
     Cookies.remove('auth_token');
     router.push('/auth/Login');
@@ -333,6 +336,7 @@ const Visualization = () => {
         >
           Logout
         </Button>
+        <ToastContainer/>
       </Box>
     </LocalizationProvider>
   );

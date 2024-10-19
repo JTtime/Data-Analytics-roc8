@@ -10,44 +10,48 @@ import {
     Paper,
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import axios from 'axios';
+import { useAuth } from '@/context/AuthContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const router = useRouter();
+    const {token, setToken} = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
         try {
-            const response = await fetch('http://localhost:3001/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-                credentials: 'include', // Ensure cookies are sent
+            const response = await axios.post('http://localhost:3001/api/auth/login', {
+                username,
+                password,
+            }, {
+                withCredentials: true, // Ensure cookies are sent
             });
+            
 
-            const data = await response.json();
-            if (data?.status === 200) {
+   
+            if (response?.status === 200) {
 
-                const { auth_token } = await data;
+                toast.success(response?.data?.message)
+
+                const { auth_token } = await response;
                 console.log('token from response', auth_token)
                 localStorage.setItem('token', auth_token);
                 setToken(token); // Call setToken from AuthContext to update state
                 router.push('/visualisation');
-            } else {
-                toast.error(data?.error)
-            }
-
+            } 
 
             console.log('Login Response:', data);
 
 
             console.log('Cookies after login:', document.cookie);
-            router.push('/visualization');
+            // router.push('/visualization');
         } catch (error) {
             console.error(error);
             setError('Invalid username or password.');
@@ -81,11 +85,11 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        {error && (
+                        {error?.length ? (
                             <Typography color="error" align="center">
                                 {error}
                             </Typography>
-                        )}
+                        ) : ''}
                         <Button variant="contained" color="primary" type="submit">
                             Login
                         </Button>
@@ -99,6 +103,7 @@ const Login = () => {
                     </Grid>
                 </Grid>
             </Paper>
+            <ToastContainer/>
         </Container>
     );
 };
