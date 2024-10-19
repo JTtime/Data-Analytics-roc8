@@ -1,5 +1,3 @@
-// services/api.js
-
 import axios from "axios";
 
 const API_URL = 'http://localhost:3001/api/data';
@@ -18,7 +16,7 @@ export const fetchData = async (filters, token) => {
         // console.log('data result', response?.json().status)
 
 
-        // Check if the response is okay (status in the range 200-299)
+       
         if (response.status !== 200) {
             throw new Error('Network response was not ok');
         }

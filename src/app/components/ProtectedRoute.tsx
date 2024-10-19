@@ -1,6 +1,6 @@
-// components/ProtectedRoute.tsx
+'use client'
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -9,12 +9,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   React.useEffect(() => {
     if (!token) {
-      router.push('/auth/Login'); // Redirect to login if no token
+      router.push('/auth/Login');
     }
   }, [token, router]);
 
   if (!token) {
-    return null; // Optionally, you can return a loading spinner here
+    return null; // loading spinner here
   }
 
   return <>{children}</>;

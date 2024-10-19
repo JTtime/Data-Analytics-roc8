@@ -1,4 +1,4 @@
-// pages/auth/login.js
+
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -12,11 +12,11 @@ const Login = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:3001/api/auth/login', { username, password });
-            // Redirect to visualization page
+            
             router.push('/visualization');
         } catch (error) {
             console.error(error);
-            // Handle error (e.g., display message)
+            
         }
     };
 

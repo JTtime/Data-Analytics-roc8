@@ -10,7 +10,7 @@ const HomePage = () => {
     // const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        // You can retrieve the token from localStorage or a cookie
+        
         const storedToken = localStorage.getItem('auth_token');
         if (storedToken) {
             setToken(storedToken);

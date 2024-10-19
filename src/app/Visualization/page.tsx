@@ -41,6 +41,8 @@ interface DataItem {
   B: number;
   C: number;
   D: number;
+  E: number;
+  F: number;
 }
 
 const Visualization = () => {
@@ -62,40 +64,15 @@ const Visualization = () => {
   const router = useRouter();
   const { token } = useAuth();
 
-  useEffect(() => {
-    const fetchDataFromAPI = async () => {
-      try {
-        const result = await fetchData(filters, token);
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchDataFromAPI();
-  }, [filters, token]);
-
-  
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dateRangeRef.current && !dateRangeRef.current.contains(event.target as Node)) {
-        setDateRangePickerOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
   const calculateTotalSum = () => {
-    const totals = { A: 0, B: 0, C: 0, D: 0 };
+    const totals = { A: 0, B: 0, C: 0, D: 0, E: 0, F: 0 };
     data.forEach((item) => {
       totals.A += item.A;
       totals.B += item.B;
       totals.C += item.C;
       totals.D += item.D;
+      totals.E += item.E;
+      totals.F += item.F;
     });
     return totals;
   };
@@ -107,6 +84,8 @@ const Visualization = () => {
     { feature: 'B', total: totalSums.B },
     { feature: 'C', total: totalSums.C },
     { feature: 'D', total: totalSums.D },
+    { feature: 'E', total: totalSums.E },
+    { feature: 'F', total: totalSums.F },
   ];
 
   const lineData = data.map((item) => ({
@@ -120,6 +99,8 @@ const Visualization = () => {
 
   const handleLogout = async () => {
     await axios.post('http://localhost:3001/api/auth/logout');
+    localStorage.removeItem('auth_token');
+    Cookies.remove('auth_token');
     router.push('/auth/Login');
   };
 
@@ -145,10 +126,22 @@ const Visualization = () => {
     }));
   };
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
+    // Set cookies for filters
+    Cookies.set('filters', JSON.stringify(filters));
+
+    // Construct a shareable URL for the browser
+    const shareableUrl = `/visualization?age=${filters.age}&gender=${filters.gender}&startDate=${filters.startDate}&endDate=${filters.endDate}`;
+    window.history.pushState({}, '', shareableUrl); // Change browser URL without reloading
+
+    // Construct API URL based on filters
+    const apiUrl = constructApiUrl(filters);
+    fetchDataFromAPI(apiUrl); // Call API with the constructed URL
+  };
+
+  const fetchDataFromAPI = async (url: string) => {
     try {
-      const apiUrl = constructApiUrl(filters);
-      const result = await fetchData(apiUrl, token);
+      const result = await fetchData(filters, token);
       setData(result);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -156,12 +149,22 @@ const Visualization = () => {
   };
 
   const handleClearDateRange = () => {
-    setDateRangePickerOpen(false)
+    setDateRangePickerOpen(false);
     setFilters((prev) => ({
       ...prev,
       startDate: null,
       endDate: null,
     }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      age: '',
+      gender: '',
+      startDate: null,
+      endDate: null,
+    });
+    Cookies.remove('filters');
   };
 
   const formatDate = (date: number | null) => {
@@ -172,6 +175,32 @@ const Visualization = () => {
 
   const formattedStartDate = formatDate(filters.startDate);
   const formattedEndDate = formatDate(filters.endDate);
+
+  useEffect(() => {
+    const filtersFromCookies = Cookies.get('filters');
+    if (filtersFromCookies) {
+      const parsedFilters = JSON.parse(filtersFromCookies);
+      setFilters(parsedFilters);
+      const shareableUrl = `/visualization?age=${parsedFilters.age}&gender=${parsedFilters.gender}&startDate=${parsedFilters.startDate}&endDate=${parsedFilters.endDate}`;
+      window.history.pushState({}, '', shareableUrl); // Set the URL based on cookie filters
+
+      const apiUrl = constructApiUrl(parsedFilters);
+      fetchDataFromAPI(apiUrl); // Fetch data based on cookie filters
+    }
+  }, [token]); 
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dateRangeRef.current && !dateRangeRef.current.contains(event.target as Node)) {
+        setDateRangePickerOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -249,48 +278,52 @@ const Visualization = () => {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={handleClearDateRange}
+                onClick={handleResetFilters}
                 sx={{ marginLeft: 2 }}
               >
-                Clear Date Range
+                Reset Filters
               </Button>
             </Grid>
           </Grid>
         </Paper>
 
-        <Paper elevation={3} sx={{ padding: 3, marginBottom: 4 }}>
-          <Typography variant="h5">Bar Chart</Typography>
-          <BarChart width={600} height={300} data={barData} layout="vertical">
-            <YAxis type="category" dataKey="feature" />
-            <XAxis type="number" />
-            <Tooltip />
-            <CartesianGrid strokeDasharray="3 3" />
-            <Bar
-              dataKey="total"
-              fill="#8884d8"
-              onClick={(data) => handleFeatureClick(data.feature)}
-            />
-          </BarChart>
-        </Paper>
-
-        {selectedFeature && (
-          <Paper elevation={3} sx={{ padding: 3 }}>
-            <Typography variant="h5">
-              Line Chart for Feature {selectedFeature}
-            </Typography>
-            <LineChart width={600} height={300} data={lineData}>
-              <XAxis dataKey="day" />
-              <YAxis />
+        <Paper
+          elevation={3}
+          sx={{ padding: 3, marginBottom: 4, display: 'flex', justifyContent: 'space-between' }}>
+          <Box>
+            <Typography variant="h5">Bar Chart</Typography>
+            <BarChart width={600} height={300} data={barData} layout="vertical">
+              <YAxis type="category" dataKey="feature" />
+              <XAxis type="number" />
               <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#ff4081"
-                strokeWidth={2}
+              <CartesianGrid strokeDasharray="3 3" />
+              <Bar
+                dataKey="total"
+                fill="#8884d8"
+                onClick={(data) => handleFeatureClick(data.feature)}
               />
-            </LineChart>
-          </Paper>
-        )}
+            </BarChart>
+          </Box>
+
+          {selectedFeature && (
+            <Box>
+              <Typography variant="h5">
+                Line Chart for Feature {selectedFeature}
+              </Typography>
+              <LineChart width={600} height={300} data={lineData}>
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#ff4081"
+                  strokeWidth={2}
+                />
+              </LineChart>
+            </Box>
+          )}
+        </Paper>
 
         <Button
           variant="contained"

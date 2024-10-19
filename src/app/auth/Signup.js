@@ -12,11 +12,11 @@ const Signup = () => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:3001/api/auth/register', { username, password });
-            // Redirect to login page
+            
             router.push('/auth/login');
         } catch (error) {
             console.error(error);
-            // Handle error (e.g., display message)
+            
         }
     };
 
