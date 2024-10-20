@@ -1,3 +1,8 @@
+## Test user credentials
+username: "testuser"
+password: "testpassword"
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -14,9 +19,7 @@ pnpm dev
 bun dev
 ```
 
-## Test user credentials
-username: "testuser"
-password: "testpassword"
+
 
 ## Manual for running locally
 
