@@ -20,7 +20,7 @@ import {
   LineChart,
   Line,
 } from 'recharts';
-import { fetchData } from '../../services/api';
+import { fetchData } from '../services/api';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Grid from '@mui/material/Grid2';
