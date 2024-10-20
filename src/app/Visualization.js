@@ -125,12 +125,12 @@ const Visualization = () => {
   };
 
   const handleLogout = async () => {
-    await axios.post('http://localhost:3001/api/auth/logout');
+    await axios.post('https://loginflowbackend.onrender.com/api/auth/logout');
     router.push('/auth/Login');
   };
 
   const constructApiUrl = (filters: any) => {
-    const baseUrl = Cookies.get('apiBaseUrl') || 'http://localhost:3001/api/data';
+    const baseUrl = Cookies.get('apiBaseUrl') || 'https://loginflowbackend.onrender.com/api/data';
     const params = new URLSearchParams();
     if (filters.age) params.append('age', filters.age);
     if (filters.gender) params.append('gender', filters.gender);

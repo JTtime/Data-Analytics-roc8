@@ -22,7 +22,7 @@ const Signup = () => {
         e.preventDefault();
         setError('');
         try {
-            const response = await axios.post('http://localhost:3001/api/auth/register', { username, password });
+            const response = await axios.post('https://loginflowbackend.onrender.com/api/auth/register', { username, password });
             if (response?.status===201) {
                 router.push('/auth/Login');
             }

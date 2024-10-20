@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'http://localhost:3001/api/data';
+const API_URL = 'https://loginflowbackend.onrender.com/api/data';
 
 export const fetchData = async (filters, token) => {
     try {

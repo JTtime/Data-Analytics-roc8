@@ -11,7 +11,7 @@ const Signup = () => {
     const handleSignup = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('http://localhost:3001/api/auth/register', { username, password });
+            await axios.post('https://loginflowbackend.onrender.com/api/auth/register', { username, password });
             
             router.push('/auth/login');
         } catch (error) {
