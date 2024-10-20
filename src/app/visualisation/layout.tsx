@@ -1,9 +1,12 @@
-import React from 'react'
+// components/Layout.tsx
+import React, { ReactNode } from 'react';
 
-const layout = ({children}) => {
-  return (
-    <div>{children}</div>
-  )
+interface LayoutProps {
+  children: ReactNode;
 }
 
-export default layout
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  return <div>{children}</div>;
+};
+
+export default Layout;

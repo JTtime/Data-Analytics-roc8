@@ -139,10 +139,10 @@ const Visualization = () => {
 
     // Construct API URL based on filters
     const apiUrl = constructApiUrl(filters);
-    fetchDataFromAPI(apiUrl); // Call API with the constructed URL
+    fetchDataFromAPI(); // Call API with the constructed URL
   };
 
-  const fetchDataFromAPI = async (url: string) => {
+  const fetchDataFromAPI = async () => {
     try {
       const result = await fetchData(filters, token);
       setData(result);
@@ -151,14 +151,14 @@ const Visualization = () => {
     }
   };
 
-  const handleClearDateRange = () => {
-    setDateRangePickerOpen(false);
-    setFilters((prev) => ({
-      ...prev,
-      startDate: null,
-      endDate: null,
-    }));
-  };
+  // const handleClearDateRange = () => {
+  //   setDateRangePickerOpen(false);
+  //   setFilters((prev) => ({
+  //     ...prev,
+  //     startDate: null,
+  //     endDate: null,
+  //   }));
+  // };
 
   const handleResetFilters = () => {
     setFilters({
@@ -188,7 +188,7 @@ const Visualization = () => {
       window.history.pushState({}, '', shareableUrl); // Set the URL based on cookie filters
 
       const apiUrl = constructApiUrl(parsedFilters);
-      fetchDataFromAPI(apiUrl); // Fetch data based on cookie filters
+      fetchDataFromAPI(); // Fetch data based on cookie filters
     }
   }, [token]); 
 
