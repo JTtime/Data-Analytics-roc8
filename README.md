@@ -18,6 +18,8 @@ bun dev
 username: "testuser"
 password: "testpassword"
 
+## Manual for running locally
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
